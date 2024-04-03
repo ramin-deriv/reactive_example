@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reactive_example/currency_converter_cubit.dart';
 import 'package:reactive_example/currency_converter_cubit_imperative.dart';
-import 'package:reactive_example/currency_converter_cubit_reactive.dart';
 import 'package:reactive_example/exchage_rate_state.dart';
 import 'package:reactive_example/exchange_rate_service.dart';
 
@@ -42,7 +41,7 @@ class ImperativeStyle extends State<HomePage> {
   void initState() {
     super.initState();
     _currencyConverterCubit =
-        CurrencyConverterCubitReactive(ExchangeRateService());
+        CurrencyConverterCubitImperative(ExchangeRateService());
 
     _amountController.addListener(() {
       if (_amountController.text.isEmpty) return;
@@ -63,13 +62,17 @@ class ImperativeStyle extends State<HomePage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              Text('${_currencyConverterCubit.runtimeType}'),
               TextField(
+                autofocus: true,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: 'Amount',
                 ),
+                style: Theme.of(context).textTheme.headlineSmall,
                 controller: _amountController,
               ),
+              const SizedBox(height: 16),
               BlocBuilder<CurrencyConverterCubit, CurrencyConvertState>(
                 bloc: _currencyConverterCubit,
                 builder: (context, state) {
@@ -78,6 +81,7 @@ class ImperativeStyle extends State<HomePage> {
                   } else if (state is CurrencyConvertLoaded) {
                     return Text(
                       'Converted amount: ${state.result.toStringAsFixed(4)}',
+                      style: Theme.of(context).textTheme.headlineSmall,
                     );
                   } else {
                     return const Text('Error');
