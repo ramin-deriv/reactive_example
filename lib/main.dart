@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reactive_example/currency_converter_cubit.dart';
 import 'package:reactive_example/currency_converter_cubit_imperative.dart';
+import 'package:reactive_example/currency_converter_cubit_reactive.dart';
 import 'package:reactive_example/exchage_rate_state.dart';
 import 'package:reactive_example/exchange_rate_service.dart';
 
@@ -33,18 +35,18 @@ class HomePage extends StatefulWidget {
 }
 
 class ImperativeStyle extends State<HomePage> {
-  late final CurrencyConverterCubitImperative _currencyConverterCubitImperative;
+  late final CurrencyConverterCubit _currencyConverterCubit;
   final TextEditingController _amountController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _currencyConverterCubitImperative =
-        CurrencyConverterCubitImperative(ExchangeRateService());
+    _currencyConverterCubit =
+        CurrencyConverterCubitReactive(ExchangeRateService());
 
     _amountController.addListener(() {
       if (_amountController.text.isEmpty) return;
-      _currencyConverterCubitImperative
+      _currencyConverterCubit
           .convertCurrency(double.parse(_amountController.text));
     });
   }
@@ -68,9 +70,8 @@ class ImperativeStyle extends State<HomePage> {
                 ),
                 controller: _amountController,
               ),
-              BlocBuilder<CurrencyConverterCubitImperative,
-                  CurrencyConvertState>(
-                bloc: _currencyConverterCubitImperative,
+              BlocBuilder<CurrencyConverterCubit, CurrencyConvertState>(
+                bloc: _currencyConverterCubit,
                 builder: (context, state) {
                   if (state is CurrencyConvertInitial) {
                     return const Text('Enter amount to convert');
@@ -92,7 +93,7 @@ class ImperativeStyle extends State<HomePage> {
 
   @override
   void dispose() {
-    _currencyConverterCubitImperative.close();
+    _currencyConverterCubit.close();
     super.dispose();
   }
 }

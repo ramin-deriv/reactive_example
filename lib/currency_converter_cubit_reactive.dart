@@ -1,17 +1,19 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reactive_example/currency_converter_cubit.dart';
 import 'package:reactive_example/exchage_rate_state.dart';
-import 'package:reactive_example/exchange_rate_service.dart';
+import 'package:rxdart/rxdart.dart' as rx;
 
-class CurrencyConverterCubitReactive extends Cubit<CurrencyConvertState> {
-  CurrencyConverterCubitReactive(this.exchangeRateService)
-      : super(CurrencyConvertInitial()) {
-    exchangeRateService.getExchangeRate('USD', 'EUR').listen((rate) {
-      print('rate: $rate');
-      emit(CurrencyConvertLoaded(rate));
+class CurrencyConverterCubitReactive extends CurrencyConverterCubit {
+  CurrencyConverterCubitReactive(super.exchangeRateService) {
+    rx.Rx.combineLatest2(exchangeRateService.getExchangeRate('USD', 'EUR'),
+        _amountController.stream, (a, b) => a * b).listen((convertedValue) {
+      emit(CurrencyConvertLoaded(convertedValue));
     });
   }
 
-  final ExchangeRateService exchangeRateService;
+  final rx.BehaviorSubject<double> _amountController =
+      rx.BehaviorSubject<double>();
 
-  void convertCurrency() async {}
+  void convertCurrency(double amount) {
+    _amountController.add(amount);
+  }
 }
