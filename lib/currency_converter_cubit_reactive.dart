@@ -4,16 +4,26 @@ import 'package:rxdart/rxdart.dart' as rx;
 
 class CurrencyConverterCubitReactive extends CurrencyConverterCubit {
   CurrencyConverterCubitReactive(super.exchangeRateService) {
-    rx.Rx.combineLatest2(exchangeRateService.getExchangeRate('USD', 'EUR'),
-        _amountController.stream, (a, b) => a * b).listen((convertedValue) {
-      emit(CurrencyConvertLoaded(convertedValue));
+    rx.Rx.combineLatest2(
+      exchangeRateService.getExchangeRate('EUR', 'USD'),
+      _amountSubject.stream.debounceTime(const Duration(milliseconds: 300)),
+      (rate, amount) => rate * amount,
+    ).listen((result) {
+      emit(CurrencyConvertLoaded(result));
     });
   }
 
-  final rx.BehaviorSubject<double> _amountController =
+  final rx.BehaviorSubject<double> _amountSubject =
       rx.BehaviorSubject<double>();
 
+  @override
   void convertCurrency(double amount) {
-    _amountController.add(amount);
+    _amountSubject.add(amount);
+  }
+
+  @override
+  Future<void> close() {
+    _amountSubject.close();
+    return super.close();
   }
 }
