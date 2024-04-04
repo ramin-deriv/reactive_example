@@ -12,14 +12,14 @@ class CurrencyConverterCubitImperative extends CurrencyConverterCubit {
   CurrencyConverterCubitImperative(super.exchangeRateService) {
     exchangeRateService.getExchangeRate('USD', 'EUR').listen((rate) {
       _latestRate = rate;
-      if (_latestRate != null) {
-        emit(CurrencyConvertLoaded(_latestAmount * _latestRate!));
+      if (_latestAmount != null) {
+        emit(CurrencyConvertLoaded(_latestAmount! * rate));
       }
     });
   }
 
   double? _latestRate;
-  double _latestAmount = 0;
+  double? _latestAmount;
   Timer? _debounce;
 
   @override
@@ -33,7 +33,7 @@ class CurrencyConverterCubitImperative extends CurrencyConverterCubit {
     _debounce = Timer(const Duration(milliseconds: 1000), () {
       _latestAmount = amount;
       if (_latestRate != null) {
-        emit(CurrencyConvertLoaded(_latestAmount * _latestRate!));
+        emit(CurrencyConvertLoaded(amount * _latestRate!));
       }
     });
   }
