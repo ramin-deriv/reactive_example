@@ -55,7 +55,7 @@ class ImperativeStyle extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Market state'),
+        title: const Text('Exchange Rate converter'),
       ),
       body: Center(
         child: Padding(
