@@ -18,8 +18,10 @@ class CurrencyConverterCubitImperative extends CurrencyConverterCubit {
     });
   }
 
+  // States
   double? _latestRate;
   double? _latestAmount;
+
   Timer? _debounce;
 
   @override
