@@ -5,6 +5,7 @@ import 'package:reactive_example/exchage_rate_state.dart';
 
 // Latest exchange rate
 // Latest amount
+// Show the converted value
 // Apply debounce if user change input quickly
 // Don't convert if the new user input is equal the last input
 class CurrencyConverterCubitImperative extends CurrencyConverterCubit {

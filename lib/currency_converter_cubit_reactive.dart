@@ -6,6 +6,7 @@ import 'package:rxdart/rxdart.dart' as rx;
 
 // Latest exchange rate
 // Latest amount
+// Show the converted value
 // Apply debounce if user change input quickly
 // Don't convert if the new user input is equal the last input
 class CurrencyConverterCubitReactive extends CurrencyConverterCubit {
