@@ -1,6 +1,12 @@
+import 'dart:async';
+
 import 'package:reactive_example/currency_converter_cubit.dart';
 import 'package:reactive_example/exchage_rate_state.dart';
 
+// Latest exchange rate
+// Latest amount
+// Apply debounce if user change input quickly
+// Don't convert if the new user input is equal the last input
 class CurrencyConverterCubitImperative extends CurrencyConverterCubit {
   CurrencyConverterCubitImperative(super.exchangeRateService) {
     exchangeRateService.getExchangeRate('USD', 'EUR').listen((rate) {
@@ -13,11 +19,21 @@ class CurrencyConverterCubitImperative extends CurrencyConverterCubit {
 
   double? _latestRate;
   double _latestAmount = 0;
+  Timer? _debounce;
 
+  @override
   void convertCurrency(double amount) async {
-    _latestAmount = amount;
-    if (_latestRate != null) {
-      emit(CurrencyConvertLoaded(_latestAmount * _latestRate!));
+    if (amount == _latestAmount) {
+      return;
     }
+
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+
+    _debounce = Timer(const Duration(milliseconds: 1000), () {
+      _latestAmount = amount;
+      if (_latestRate != null) {
+        emit(CurrencyConvertLoaded(_latestAmount * _latestRate!));
+      }
+    });
   }
 }
