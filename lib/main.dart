@@ -42,7 +42,7 @@ class ImperativeStyle extends State<HomePage> {
   void initState() {
     super.initState();
     _currencyConverterCubit =
-        CurrencyConverterCubitImperative(ExchangeRateService());
+        CurrencyConverterCubitReactive(ExchangeRateService());
 
     _amountController.addListener(() {
       if (_amountController.text.isEmpty) return;
